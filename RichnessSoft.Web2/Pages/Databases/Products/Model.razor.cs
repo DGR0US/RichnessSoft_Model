@@ -43,7 +43,7 @@ namespace RichnessSoft.Web2.Pages.Databases.Products
 
         async void AddNewAsync()
         {
-            string URL = $"/Database/ModelxEdit/0/{ParrentMenu}";
+            string URL = $"/Database/ModelEdit/0/{ParrentMenu}";
             NavigationManager.NavigateTo(URL);
         }
 
@@ -57,7 +57,7 @@ namespace RichnessSoft.Web2.Pages.Databases.Products
 
         async void OnEdit(int id)
         {
-            string URL = $"/Database/ModelxEdit/{id}/{ParrentMenu}";
+            string URL = $"/Database/ModelEdit/{id}/{ParrentMenu}";
             NavigationManager.NavigateTo(URL);
         }
 
