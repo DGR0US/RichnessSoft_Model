@@ -56,6 +56,7 @@ builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IPdGroupService, PdGroupService>();
 builder.Services.AddScoped<IModelService, ModelService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddCors(options =>
 {

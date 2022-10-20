@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation.Validators;
+using Microsoft.EntityFrameworkCore;
 using RichnessSoft.Entity.Context;
 using RichnessSoft.Entity.Model;
 using RichnessSoft.Service.Store;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RichnessSoft.Service.BS
 {
-    public interface IModelService
+    public interface ICategoryService
     {
         ResultModel GetAll(int CorpId);
         Task<ResultModel> GetAllAsync(int CorpId);
@@ -18,33 +19,33 @@ namespace RichnessSoft.Service.BS
         ResultModel GetById(int Id);
         ResultModel GetByCode(int CorpId, string Code);
         ResultModel GetByName(int CorpId, string Name);
-        ResultModel Add(Models model);
-        ResultModel Edit(Models model);
-        ResultModel Delete(Models model);
+        ResultModel Add(Category category);
+        ResultModel Edit(Category category);
+        ResultModel Delete(Category category);
     }
-    public class ModelService : BaseService, IModelService
+    public class CategoryService : BaseService, ICategoryService
     {
         private readonly RicnessDbContext _db;
         private readonly ProfileStore _store;
-        public ModelService(RicnessDbContext db, ProfileStore store)
+        public CategoryService(RicnessDbContext db, ProfileStore store)
         {
             _db = db;
             _store = store;
         }
 
-        public ResultModel Add(Models model)
+        public ResultModel Add(Category category)
         {
             ResultModel res = new ResultModel();
             try
             {
                 using (var db = new RicnessDbContext())
                 {
-                    model.createby = _store.CurrentUser.username;
-                    model.createatutc = DateTime.Now;
-                    model.companyid = _store.CurentCompany.id;
-                    db.Add(model);
+                    category.createby = _store.CurrentUser.username;
+                    category.createatutc = DateTime.Now;
+                    category.companyid = _store.CurentCompany.id;
+                    db.Add(category);
                     db.SaveChanges();
-                    AddLog<Models>(model);
+                    AddLog<Category>(category);
                     res.Success = true;
                 }
             }
@@ -56,16 +57,16 @@ namespace RichnessSoft.Service.BS
             return res;
         }
 
-        public ResultModel Delete(Models model)
+        public ResultModel Delete(Category category)
         {
             ResultModel res = new ResultModel();
             try
             {
                 using (var db = new RicnessDbContext())
                 {
-                    var data = db.Models.Where(x => x.id == model.id).FirstOrDefault();
-                    db.Models.Remove(data);
-                    DeleteLog<Models>(data);
+                    var data = db.Category.Where(x => x.id == category.id).FirstOrDefault();
+                    db.Category.Remove(data);
+                    DeleteLog<Category>(data);
                     db.SaveChanges();
                     res.Success = true;
                 }
@@ -78,21 +79,21 @@ namespace RichnessSoft.Service.BS
             return res;
         }
 
-        public ResultModel Edit(Models model)
+        public ResultModel Edit(Category category)
         {
             ResultModel res = new ResultModel();
             try
             {
                 using (var db = new RicnessDbContext())
                 {
-                    var Olddata = db.Models.Where(x => x.id == model.id).FirstOrDefault();
-                    model.updateby = _store.CurrentUser.username;
-                    model.companyid = _store.CurentCompany.id;
-                    model.updateatutc = DateTime.Now;
-                    db.Models.Update(model);
+                    var Olddata = db.Category.Where(x => x.id == category.id).FirstOrDefault();
+                    category.updateby = _store.CurrentUser.username;
+                    category.companyid = _store.CurentCompany.id;
+                    category.updateatutc = DateTime.Now;
+                    db.Category.Update(category);
                     db.SaveChanges();
-                    _db.Entry(model).State = EntityState.Detached;
-                    UpdateLog<Models>(Olddata, model);
+                    _db.Entry(category).State = EntityState.Detached;
+                    UpdateLog<Category>(Olddata, category);
                     res.Success = true;
                 }
             }
@@ -107,35 +108,35 @@ namespace RichnessSoft.Service.BS
         public ResultModel GetAll(int CorpId)
         {
             ResultModel res = new ResultModel();
-            res.Data = _db.Models.Where(x => x.companyid == CorpId).ToList();
+            res.Data = _db.Category.Where(x => x.companyid == CorpId).ToList();
             return res;
         }
 
         public async Task<ResultModel> GetAllAsync(int CorpId)
         {
             ResultModel res = new ResultModel();
-            res.Data = _db.Models.Where(x => x.companyid == CorpId).ToList();
+            res.Data = _db.Category.Where(x => x.companyid == CorpId).ToList();
             return res;
         }
 
         public ResultModel GetByCode(int CorpId, string Code)
         {
             ResultModel res = new ResultModel();
-            res.Data = _db.Models.Where(x => x.companyid == CorpId && x.code.Equals(Code)).FirstOrDefault();
+            res.Data = _db.Category.Where(x => x.companyid == CorpId && x.code.Equals(Code)).FirstOrDefault();
             return res;
         }
 
         public ResultModel GetById(int Id)
         {
             ResultModel res = new ResultModel();
-            res.Data = _db.Models.Where(x => x.id == Id).FirstOrDefault();
+            res.Data = _db.Category.Where(x => x.id == Id).FirstOrDefault();
             return res;
         }
 
         public ResultModel GetByName(int CorpId, string Name)
         {
             ResultModel res = new ResultModel();
-            res.Data = _db.Models.Where(x => x.companyid == CorpId && x.code.Contains(Name)).ToList();
+            res.Data = _db.Category.Where(x => x.companyid == CorpId && x.code.Contains(Name)).ToList();
             return res;
         }
     }
