@@ -112,8 +112,8 @@ namespace RichnessSoft.Web2.Pages.Databases.Products
 
         async void activeChange(IEnumerable<string> values)
         {
-            var sss = values.ToArray();
-            if (sss[0] == ConstUtil.ACTIVE.YES)
+            var checkActive = values.ToArray();
+            if (checkActive[0] == ConstUtil.ACTIVE.YES)
             {
                 category.inactivedate = null;
                 _picker.Clear();
